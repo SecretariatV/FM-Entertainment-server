@@ -1,5 +1,6 @@
 import { googleCallback, login, signup } from "controllers/authController";
 import { Router } from "express";
+import { authMiddleware } from "middlewares";
 import passport from "passport";
 
 const router = Router();
@@ -20,5 +21,9 @@ router.get(
   passport.authenticate("google", { session: false }),
   googleCallback
 );
+
+router.get("/protected", authMiddleware, (req, res) => {
+  res.json({ message: "You have accessed a protected route!", user: req.user });
+});
 
 export default router;

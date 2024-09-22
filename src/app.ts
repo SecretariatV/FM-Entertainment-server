@@ -3,14 +3,21 @@ import session from "express-session";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import cors from "cors";
+import helmet from "helmet";
 import authRoutes from "routes/authRoutes";
-import { errorHandler, requestLogger } from "middlewares";
+import { errorHandler, limiterMiddleware, requestLogger } from "middlewares";
 import { connectDB, logger, passportConfig } from "config";
 
 dotenv.config();
 
 const app = express();
 const secret = process.env.SECRET as string;
+
+const corsOption = {
+  origin: "http://localhost:3000",
+  credentials: true,
+};
 
 connectDB();
 
@@ -29,6 +36,31 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 passportConfig();
+
+app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  })
+);
+app.use(helmet.frameguard({ action: "deny" }));
+app.use(helmet.ieNoOpen());
+app.use(helmet.noSniff());
+app.use(
+  helmet.hsts({
+    maxAge: 60 * 60 * 24 * 30,
+    includeSubDomains: true,
+    preload: true,
+  })
+);
+
+app.use(cors(corsOption));
+app.use(limiterMiddleware);
 
 app.use(requestLogger);
 
