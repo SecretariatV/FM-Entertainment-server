@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
 import authRoutes from "routes/authRoutes";
+import entertainmentRoutes from "routes/entertainmentRoutes";
 import { errorHandler, limiterMiddleware, requestLogger } from "middlewares";
 import { connectDB, logger, passportConfig } from "config";
 
@@ -65,6 +66,7 @@ app.use(limiterMiddleware);
 app.use(requestLogger);
 
 app.use("/api/auth", authRoutes);
+app.use("/api/entertainment", entertainmentRoutes);
 
 app.use(errorHandler);
 

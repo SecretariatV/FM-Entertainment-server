@@ -17,6 +17,7 @@ export const authMiddleware = (
     (req as any).user = decoded;
     next();
   } catch (error) {
+    next(error);
     return res.status(401).json({ message: "Token is not valid" });
   }
 };

@@ -9,4 +9,25 @@ interface IUser extends Document {
   comparePassword(enteredPassword: string): Promise<boolean>;
 }
 
-export type { IUser };
+interface IImageType {
+  small: string;
+  medium: string;
+  large: string;
+}
+
+interface ITrendingType extends Omit<IImageType, "medium"> {}
+
+interface IEntertainment extends Document {
+  title: string;
+  thumbnail: {
+    trending?: ITrendingType;
+    regular: IImageType;
+  };
+  year: number;
+  category: "Movie" | "TV Series";
+  rating: "PG" | "E" | "18+";
+  isBookmarked: boolean;
+  isTrending: boolean;
+}
+
+export type { IUser, IEntertainment, IImageType, ITrendingType };

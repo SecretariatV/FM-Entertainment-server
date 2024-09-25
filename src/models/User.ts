@@ -17,13 +17,12 @@ const userSchema = new Schema<IUser>({
 userSchema.pre<IUser>("save", async function (next) {
   if (!this.isModified("password")) return next();
 
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password as string, salt);
+  this.password = await bcrypt.hash(this.password as string, 10);
   next();
 });
 
 userSchema.methods.comparePassword = async function (enteredPassword: string) {
-  return await bcrypt.compare(enteredPassword, this.password);
+  return await bcrypt.compareSync(enteredPassword, this.password);
 };
 
 userSchema.statics.findOneOrCreateFromGoogle = async function (profile: any) {

@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import User from "models/User";
-import bcrypt from "bcryptjs";
 import generateToken from "utils/generateToken";
 import { IUser } from "types";
 import { logger } from "config";
@@ -21,21 +20,11 @@ export const signup = async (
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = new User({ name, email, password: hashedPassword });
+    const user = new User({ name, email, password });
 
     await user.save();
 
     logger.info(`New user create: ${email}`);
-
-    const token = generateToken(user);
-
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 1000 * 24,
-    });
 
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
