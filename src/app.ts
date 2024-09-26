@@ -67,6 +67,9 @@ app.use(requestLogger);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/entertainment", entertainmentRoutes);
+app.use("/", (_req: Request, res: Response) => {
+  res.status(201).json({ message: "Running server" });
+});
 
 app.use(errorHandler);
 
