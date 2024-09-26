@@ -16,7 +16,7 @@ const app = express();
 const secret = process.env.SECRET as string;
 
 const corsOption = {
-  origin: "http://localhost:3000",
+  origin: process.env.FRONTEND_URL as string,
   credentials: true,
 };
 
