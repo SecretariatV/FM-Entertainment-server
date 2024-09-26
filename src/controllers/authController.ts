@@ -43,7 +43,7 @@ export const login = (req: Request, res: Response) => {
   const token = generateToken(req.user);
 
   res.cookie("jwt", token, {
-    httpOnly: false,
+    httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60 * 1000 * 24,
   });
@@ -56,7 +56,7 @@ export const googleCallback = (req: Request, res: Response) => {
   const token = generateToken(req.user);
 
   res.cookie("jwt", token, {
-    httpOnly: false,
+    httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60 * 1000 * 24,
   });
