@@ -42,11 +42,21 @@ export const getEntertainament = async (
     let entertainment;
 
     if (category === "movie") {
-      entertainment = await Entertainment.find({ category: "Movie" });
+      entertainment = await Entertainment.find({
+        category: "Movie",
+        isTrending: false,
+      });
     } else if (category === "serie") {
-      entertainment = await Entertainment.find({ category: "TV Series" });
+      entertainment = await Entertainment.find({
+        category: "TV Series",
+        isTrending: false,
+      });
+    } else if (category === "trending") {
+      entertainment = await Entertainment.find({ isTrending: true });
     } else {
-      entertainment = await Entertainment.find();
+      entertainment = await Entertainment.find({
+        isTrending: false,
+      });
     }
 
     res.status(201).json(entertainment);
@@ -55,6 +65,84 @@ export const getEntertainament = async (
   }
 };
 
-export const getCategory = async () => {};
+export const changeBookmarkState = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { _id, isBookmarked, key } = req.body;
+  try {
+    await Entertainment.findByIdAndUpdate(
+      { _id },
+      { isBookmarked: !isBookmarked }
+    );
 
-export const getBookmark = async () => {};
+    const category = req.query.category;
+
+    let entertainment;
+
+    if (key) {
+      if (category === "movie") {
+        entertainment = await Entertainment.find({
+          category: "Movie",
+          isBookmarked: true,
+        });
+      } else if (category === "serie") {
+        entertainment = await Entertainment.find({
+          category: "TV Series",
+          isBookmarked: true,
+        });
+      }
+    } else {
+      if (category === "movie") {
+        entertainment = await Entertainment.find({
+          category: "Movie",
+          isTrending: false,
+        });
+      } else if (category === "serie") {
+        entertainment = await Entertainment.find({
+          category: "TV Series",
+          isTrending: false,
+        });
+      } else if (category === "trending") {
+        entertainment = await Entertainment.find({ isTrending: true });
+      } else {
+        entertainment = await Entertainment.find({
+          isTrending: false,
+        });
+      }
+    }
+
+    res.status(201).json(entertainment);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getBookmarked = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const category = req.query.category;
+
+    let entertainment;
+
+    if (category === "movie") {
+      entertainment = await Entertainment.find({
+        category: "Movie",
+        isBookmarked: true,
+      });
+    } else if (category === "serie") {
+      entertainment = await Entertainment.find({
+        category: "TV Series",
+        isBookmarked: true,
+      });
+    }
+
+    res.status(201).json(entertainment);
+  } catch (error) {
+    next(error);
+  }
+};
